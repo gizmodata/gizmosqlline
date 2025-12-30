@@ -5,6 +5,8 @@ import sqlline.SqlLine.Status;
 
 import java.io.IOException;
 import java.time.Year;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * GizmoSQLLine - A Flight SQL-specific version of SQLLine for connecting to GizmoSQL instances.
@@ -25,6 +27,9 @@ public class GizmoSQLLine {
     private static final String VERSION = "1.0.0";
 
     public static void main(String[] args) throws IOException {
+        // Suppress verbose Arrow INFO logging
+        Logger.getLogger("org.apache.arrow").setLevel(Level.WARNING);
+
         // Ensure the Flight SQL JDBC driver is loaded
         try {
             Class.forName(FLIGHT_SQL_DRIVER);

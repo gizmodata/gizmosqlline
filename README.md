@@ -21,7 +21,7 @@ Download from the [Releases](../../releases) page:
 |----------|------|--------------|
 | Linux/macOS | `gizmosqlline` | `chmod +x gizmosqlline && ./gizmosqlline` |
 | Windows | `gizmosqlline.jar` + `gizmosqlline.bat` | Download both to same folder, run `gizmosqlline.bat` |
-| Any | `gizmosqlline.jar` | `java -jar gizmosqlline.jar` |
+| Any | `gizmosqlline.jar` | `java --add-opens=java.base/java.nio=ALL-UNNAMED -jar gizmosqlline.jar` |
 
 #### Quick Install (Linux/macOS)
 

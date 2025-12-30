@@ -4,17 +4,16 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.condition.EnabledIf;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.Duration;
-import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,9 +22,13 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * These tests spin up a GizmoSQL Docker container and verify that
  * the Flight SQL JDBC driver can connect and execute queries.
+ *
+ * To run locally on macOS with Docker Desktop:
+ * export DOCKER_HOST=unix://$HOME/.docker/run/docker.sock
+ * mvn verify
  */
-@Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@EnabledIf("isDockerAvailable")
 public class GizmoSQLLineIT {
 
     private static final String GIZMOSQL_IMAGE = "gizmosql/gizmosql:latest";
@@ -33,22 +36,33 @@ public class GizmoSQLLineIT {
     private static final String USERNAME = "gizmosql_username";
     private static final String PASSWORD = "gizmosql_password";
 
-    @Container
-    private static final GenericContainer<?> gizmosqlContainer = new GenericContainer<>(GIZMOSQL_IMAGE)
-            .withExposedPorts(GIZMOSQL_PORT)
-            .withEnv("GIZMOSQL_USERNAME", USERNAME)
-            .withEnv("GIZMOSQL_PASSWORD", PASSWORD)
-            .withEnv("TLS_ENABLED", "1")
-            .withEnv("PRINT_QUERIES", "1")
-            .waitingFor(new LogMessageWaitStrategy()
-                    .withRegEx(".*GizmoSQL server - started.*\\n")
-                    .withStartupTimeout(Duration.ofSeconds(60)));
-
+    private GenericContainer<?> gizmosqlContainer;
     private String jdbcUrl;
+
+    static boolean isDockerAvailable() {
+        try {
+            DockerClientFactory.instance().client();
+            return true;
+        } catch (Exception e) {
+            System.out.println("Docker not available, skipping integration tests: " + e.getMessage());
+            return false;
+        }
+    }
 
     @BeforeAll
     void setUp() {
+        gizmosqlContainer = new GenericContainer<>(GIZMOSQL_IMAGE)
+                .withExposedPorts(GIZMOSQL_PORT)
+                .withEnv("GIZMOSQL_USERNAME", USERNAME)
+                .withEnv("GIZMOSQL_PASSWORD", PASSWORD)
+                .withEnv("TLS_ENABLED", "1")
+                .withEnv("PRINT_QUERIES", "1")
+                .waitingFor(new LogMessageWaitStrategy()
+                        .withRegEx(".*GizmoSQL server - started.*\\n")
+                        .withStartupTimeout(Duration.ofSeconds(60)));
+
         gizmosqlContainer.start();
+
         String host = gizmosqlContainer.getHost();
         Integer port = gizmosqlContainer.getMappedPort(GIZMOSQL_PORT);
         jdbcUrl = String.format(
@@ -59,7 +73,7 @@ public class GizmoSQLLineIT {
 
     @AfterAll
     void tearDown() {
-        if (gizmosqlContainer.isRunning()) {
+        if (gizmosqlContainer != null && gizmosqlContainer.isRunning()) {
             gizmosqlContainer.stop();
         }
     }

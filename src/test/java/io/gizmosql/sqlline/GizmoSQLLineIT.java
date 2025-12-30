@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @EnabledIf("isDockerAvailable")
 public class GizmoSQLLineIT {
 
-    private static final String GIZMOSQL_IMAGE = "gizmosql/gizmosql:latest";
+    private static final String GIZMOSQL_IMAGE = "gizmodata/gizmosql:latest";
     private static final int GIZMOSQL_PORT = 31337;
     private static final String USERNAME = "gizmosql_username";
     private static final String PASSWORD = "gizmosql_password";

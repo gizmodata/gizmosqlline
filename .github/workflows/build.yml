@@ -27,11 +27,14 @@ jobs:
     - name: Build with Maven
       run: mvn -B clean package --file pom.xml
 
-    - name: Upload executable artifact
+    - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: gizmosqlline
-        path: target/gizmosqlline
+        path: |
+          target/gizmosqlline
+          target/gizmosqlline.jar
+          target/gizmosqlline.bat
         retention-days: 30
 
   release:
@@ -65,19 +68,26 @@ jobs:
         prerelease: false
         files: |
           target/gizmosqlline
+          target/gizmosqlline.jar
+          target/gizmosqlline.bat
         body: |
           ## GizmoSQLLine v${{ steps.get_version.outputs.VERSION }}
 
           A Flight SQL-specific version of SQLLine for connecting to GizmoSQL instances.
 
-          ### Download & Install
+          ### Downloads
+
+          | Platform | File | Instructions |
+          |----------|------|--------------|
+          | Linux/macOS | `gizmosqlline` | `chmod +x gizmosqlline && ./gizmosqlline` |
+          | Windows | `gizmosqlline.jar` + `gizmosqlline.bat` | Download both to same folder, run `gizmosqlline.bat` |
+          | Any (manual) | `gizmosqlline.jar` | `java -jar gizmosqlline.jar` |
+
+          ### Quick Install (Linux/macOS)
 
           ```bash
-          # Download the executable
           curl -L -o gizmosqlline https://github.com/${{ github.repository }}/releases/download/v${{ steps.get_version.outputs.VERSION }}/gizmosqlline
           chmod +x gizmosqlline
-
-          # Optionally move to your PATH
           sudo mv gizmosqlline /usr/local/bin/
           ```
 

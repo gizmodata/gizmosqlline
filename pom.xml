@@ -11,6 +11,15 @@
 
     <name>GizmoSQLLine</name>
     <description>A Flight SQL-specific version of SQLLine for connecting to GizmoSQL instances</description>
+    <url>https://github.com/gizmodata/gizmosqlline</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -109,7 +118,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <!-- Concatenate shell stub + JAR into executable -->
+                                <!-- Concatenate shell stub + JAR into executable for Unix/macOS -->
                                 <concat destfile="${project.build.directory}/gizmosqlline-executable" binary="true">
                                     <fileset file="${project.basedir}/src/main/scripts/stub.sh"/>
                                     <fileset file="${project.build.directory}/gizmosqlline.jar"/>
@@ -119,6 +128,9 @@
                                 <!-- Rename to final name (no extension) -->
                                 <move file="${project.build.directory}/gizmosqlline-executable"
                                       tofile="${project.build.directory}/gizmosqlline"/>
+                                <!-- Copy Windows batch file -->
+                                <copy file="${project.basedir}/src/main/scripts/gizmosqlline.bat"
+                                      tofile="${project.build.directory}/gizmosqlline.bat"/>
                             </target>
                         </configuration>
                     </execution>

@@ -15,14 +15,19 @@ GizmoSQLLine bundles SQLLine with the Apache Arrow Flight SQL JDBC driver, provi
 
 ### Download Release
 
-Download the latest `gizmosqlline` executable from the [Releases](../../releases) page:
+Download from the [Releases](../../releases) page:
+
+| Platform | File | Instructions |
+|----------|------|--------------|
+| Linux/macOS | `gizmosqlline` | `chmod +x gizmosqlline && ./gizmosqlline` |
+| Windows | `gizmosqlline.jar` + `gizmosqlline.bat` | Download both to same folder, run `gizmosqlline.bat` |
+| Any | `gizmosqlline.jar` | `java -jar gizmosqlline.jar` |
+
+#### Quick Install (Linux/macOS)
 
 ```bash
-# Download
 curl -L -o gizmosqlline https://github.com/gizmodata/gizmosqlline/releases/latest/download/gizmosqlline
 chmod +x gizmosqlline
-
-# Optionally install to PATH
 sudo mv gizmosqlline /usr/local/bin/
 ```
 
@@ -122,8 +127,10 @@ mvn clean package -DskipTests
 
 ## License
 
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
+
 This project bundles:
-- [SQLLine](https://github.com/julianhyde/sqlline) - BSD License
+- [SQLLine](https://github.com/julianhyde/sqlline) - BSD-3-Clause License
 - [Apache Arrow Flight SQL JDBC Driver](https://arrow.apache.org/) - Apache License 2.0
 
 ## Contributing

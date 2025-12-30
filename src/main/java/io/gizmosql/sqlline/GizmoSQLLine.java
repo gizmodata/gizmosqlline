@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class GizmoSQLLine {
 
     private static final String FLIGHT_SQL_DRIVER = "org.apache.arrow.driver.jdbc.ArrowFlightJdbcDriver";
-    private static final String VERSION = "1.0.0";
+    private static final String VERSION = "1.0.4";
 
     public static void main(String[] args) throws IOException {
         // Suppress verbose Arrow INFO logging

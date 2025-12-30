@@ -19,7 +19,7 @@ Download the latest `gizmosqlline` executable from the [Releases](../../releases
 
 ```bash
 # Download
-curl -L -o gizmosqlline https://github.com/YOUR_ORG/gizmosqlline/releases/latest/download/gizmosqlline
+curl -L -o gizmosqlline https://github.com/gizmodata/gizmosqlline/releases/latest/download/gizmosqlline
 chmod +x gizmosqlline
 
 # Optionally install to PATH
@@ -31,7 +31,7 @@ sudo mv gizmosqlline /usr/local/bin/
 ### Build from Source
 
 ```bash
-git clone https://github.com/your-org/gizmosqlline.git
+git clone https://github.com/gizmodata/gizmosqlline.git
 cd gizmosqlline
 mvn clean package
 ```

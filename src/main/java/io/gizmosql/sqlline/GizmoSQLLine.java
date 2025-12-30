@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 public class GizmoSQLLine {
 
     private static final String FLIGHT_SQL_DRIVER = "org.apache.arrow.driver.jdbc.ArrowFlightJdbcDriver";
-    private static final String VERSION = "1.0.4";
 
     public static void main(String[] args) throws IOException {
         // Suppress verbose Arrow INFO logging
@@ -67,7 +66,7 @@ public class GizmoSQLLine {
         System.out.println("| |_| || |/ / | | | | | | (_) |___) | |_| | |___| |___| | | | |  __/");
         System.out.println(" \\____||_/___||_| |_| |_|\\___/|____/ \\__\\_\\_____|_____|_|_| |_|\\___|");
         System.out.println();
-        System.out.println("GizmoSQLLine v" + VERSION + " - Flight SQL Client for GizmoSQL");
+        System.out.println("GizmoSQLLine " + getVersion() + " - Flight SQL Client for GizmoSQL");
         System.out.println("Copyright (c) " + Year.now().getValue() + " GizmoData LLC");
         System.out.println("Built with Apache Arrow Flight SQL JDBC Driver");
         System.out.println();
@@ -82,5 +81,10 @@ public class GizmoSQLLine {
         System.out.println("  disableCertificateVerification=true  Skip certificate verification");
         System.out.println("  token=<bearer_token>        Use bearer token authentication");
         System.out.println();
+    }
+
+    private static String getVersion() {
+        String version = GizmoSQLLine.class.getPackage().getImplementationVersion();
+        return version != null ? version : "dev";
     }
 }

@@ -13,6 +13,16 @@ GizmoSQLLine bundles SQLLine with the Apache Arrow Flight SQL JDBC driver, provi
 
 ## Installation
 
+### Homebrew (Recommended)
+
+The easiest way to install GizmoSQLLine on macOS or Linux:
+
+```bash
+brew install gizmodata/tap/gizmosqlline
+```
+
+This automatically installs Java (OpenJDK) if needed.
+
 ### Download Release
 
 Download from the [Releases](../../releases) page:

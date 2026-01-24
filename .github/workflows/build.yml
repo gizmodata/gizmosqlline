@@ -78,6 +78,12 @@ jobs:
 
           A Flight SQL-specific version of SQLLine for connecting to GizmoSQL instances.
 
+          ### Install via Homebrew (Recommended)
+
+          ```bash
+          brew install gizmodata/tap/gizmosqlline
+          ```
+
           ### Downloads
 
           | Platform | File | Instructions |
@@ -98,12 +104,79 @@ jobs:
 
           ```bash
           # Interactive mode
-          ./gizmosqlline
+          gizmosqlline
 
           # Direct connection
-          ./gizmosqlline -u "jdbc:arrow-flight-sql://localhost:31337" -n user -p password
+          gizmosqlline -u "jdbc:arrow-flight-sql://localhost:31337" -n user -p password
           ```
 
-          **Requires:** Java 11+ runtime installed
+          **Requires:** Java 11+ runtime (Homebrew install handles this automatically)
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Update Homebrew formula
+      env:
+        GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+      run: |
+        # Get version and SHA256
+        VERSION=${{ steps.get_version.outputs.VERSION }}
+        SHA256=$(sha256sum target/gizmosqlline.jar | cut -d' ' -f1)
+
+        # Clone the tap repo
+        git clone https://x-access-token:${GH_TOKEN}@github.com/gizmodata/homebrew-tap.git tap
+        cd tap
+
+        # Update the formula
+        cat > Formula/gizmosqlline.rb << 'FORMULA'
+        class Gizmosqlline < Formula
+          desc "Flight SQL command-line client for GizmoSQL servers"
+          homepage "https://github.com/gizmodata/gizmosqlline"
+          version "VERSION_PLACEHOLDER"
+          license "Apache-2.0"
+
+          url "https://github.com/gizmodata/gizmosqlline/releases/download/v#{version}/gizmosqlline.jar"
+          sha256 "SHA256_PLACEHOLDER"
+
+          depends_on "openjdk"
+
+          def install
+            libexec.install "gizmosqlline.jar"
+
+            (bin/"gizmosqlline").write <<~EOS
+              #!/bin/bash
+              export JAVA_HOME="#{Formula["openjdk"].opt_prefix}"
+              exec "${JAVA_HOME}/bin/java" --add-opens=java.base/java.nio=ALL-UNNAMED -jar "#{libexec}/gizmosqlline.jar" "$@"
+            EOS
+          end
+
+          def caveats
+            <<~EOS
+              GizmoSQLLine is a Flight SQL command-line client.
+
+              To start in interactive mode:
+                gizmosqlline
+
+              To connect directly:
+                gizmosqlline -u "jdbc:arrow-flight-sql://localhost:31337" -n user -p password
+
+              For help with SQLLine commands, type !help after connecting.
+            EOS
+          end
+
+          test do
+            output = shell_output("#{bin}/gizmosqlline --help 2>&1", 0)
+            assert_match "GizmoSQLLine", output
+          end
+        end
+        FORMULA
+
+        # Replace placeholders
+        sed -i "s/VERSION_PLACEHOLDER/${VERSION}/g" Formula/gizmosqlline.rb
+        sed -i "s/SHA256_PLACEHOLDER/${SHA256}/g" Formula/gizmosqlline.rb
+
+        # Commit and push
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add Formula/gizmosqlline.rb
+        git commit -m "Update gizmosqlline to ${VERSION}"
+        git push

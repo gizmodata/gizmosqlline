@@ -6,7 +6,7 @@ GizmoSQLLine bundles SQLLine with the GizmoSQL JDBC driver, providing an easy-to
 
 ## Features
 
-- Pre-configured with GizmoSQL JDBC driver (v1.3.0)
+- Pre-configured with GizmoSQL JDBC driver (v1.4.0)
 - Client-side and server-side query cancellation support
 - Single executable with all dependencies included
 - Full SQLLine functionality (command history, tab completion, output formatting)

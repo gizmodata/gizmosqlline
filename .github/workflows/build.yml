@@ -81,11 +81,14 @@ jobs:
         echo "Java version:"
         java -version
 
-        # --enable-native-access requires Java 16+
-        JAVA_MAJOR=$(java -version 2>&1 | head -1 | sed 's/.*"\([0-9]*\).*/\1/')
+        # --enable-native-access requires Java 16+, --sun-misc-unsafe-memory-access requires Java 25+
+        JAVA_MAJOR=$(java -version 2>&1 | head -1 | sed 's/.*"\([0-9][0-9]*\).*/\1/')
         NA=""
         if [ "$JAVA_MAJOR" -ge 16 ] 2>/dev/null; then
           NA="--enable-native-access=ALL-UNNAMED"
+        fi
+        if [ "$JAVA_MAJOR" -ge 25 ] 2>/dev/null; then
+          NA="$NA --sun-misc-unsafe-memory-access=allow"
         fi
 
         # First, run a diagnostic test to catch detailed errors
@@ -236,7 +239,11 @@ jobs:
             (bin/"gizmosqlline").write <<~EOS
               #!/bin/bash
               export JAVA_HOME="#{Formula["openjdk"].opt_prefix}"
-              exec "${JAVA_HOME}/bin/java" --add-opens=java.base/java.nio=ALL-UNNAMED --enable-native-access=ALL-UNNAMED -jar "#{libexec}/gizmosqlline.jar" "$@"
+              V=$("${JAVA_HOME}/bin/java" -version 2>&1 | head -1 | sed 's/.*"\\([0-9][0-9]*\\).*/\\1/')
+              NA=""
+              [ "$V" -ge 16 ] 2>/dev/null && NA="--enable-native-access=ALL-UNNAMED"
+              [ "$V" -ge 25 ] 2>/dev/null && NA="$NA --sun-misc-unsafe-memory-access=allow"
+              exec "${JAVA_HOME}/bin/java" --add-opens=java.base/java.nio=ALL-UNNAMED $NA -jar "#{libexec}/gizmosqlline.jar" "$@"
             EOS
           end
 

@@ -1,4 +1,4 @@
-package io.gizmosql.sqlline;
+package com.gizmodata.sqlline;
 
 import sqlline.SqlLine;
 import sqlline.SqlLine.Status;
@@ -9,31 +9,31 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * GizmoSQLLine - A Flight SQL-specific version of SQLLine for connecting to GizmoSQL instances.
+ * GizmoSQLLine - A GizmoSQL JDBC-based version of SQLLine for connecting to GizmoSQL instances.
  *
- * This wrapper pre-configures SQLLine with the Arrow Flight SQL JDBC driver,
- * making it easy to connect to Flight SQL servers.
+ * This wrapper pre-configures SQLLine with the GizmoSQL JDBC driver,
+ * making it easy to connect to GizmoSQL servers.
  *
  * Usage:
- *   java -jar gizmosqlline.jar -u "jdbc:arrow-flight-sql://host:port" -n user -p password
+ *   java -jar gizmosqlline.jar -u "jdbc:gizmosql://host:port" -n user -p password
  *
  * Or start interactive mode:
  *   java -jar gizmosqlline.jar
- *   sqlline> !connect jdbc:arrow-flight-sql://host:port user password
+ *   sqlline> !connect jdbc:gizmosql://host:port user password
  */
 public class GizmoSQLLine {
 
-    private static final String FLIGHT_SQL_DRIVER = "org.apache.arrow.driver.jdbc.ArrowFlightJdbcDriver";
+    private static final String GIZMOSQL_JDBC_DRIVER = "org.apache.arrow.driver.jdbc.ArrowFlightJdbcDriver";
 
     public static void main(String[] args) throws IOException {
         // Suppress verbose Arrow INFO logging
         Logger.getLogger("org.apache.arrow").setLevel(Level.WARNING);
 
-        // Ensure the Flight SQL JDBC driver is loaded
+        // Ensure the GizmoSQL JDBC driver is loaded
         try {
-            Class.forName(FLIGHT_SQL_DRIVER);
+            Class.forName(GIZMOSQL_JDBC_DRIVER);
         } catch (ClassNotFoundException e) {
-            System.err.println("Error: Arrow Flight SQL JDBC driver not found.");
+            System.err.println("Error: GizmoSQL JDBC driver not found.");
             System.err.println("Please ensure the driver is on the classpath.");
             System.exit(1);
         }
@@ -66,15 +66,15 @@ public class GizmoSQLLine {
         System.out.println("| |_| || |/ / | | | | | | (_) |___) | |_| | |___| |___| | | | |  __/");
         System.out.println(" \\____||_/___||_| |_| |_|\\___/|____/ \\__\\_\\_____|_____|_|_| |_|\\___|");
         System.out.println();
-        System.out.println("GizmoSQLLine " + getVersion() + " - Flight SQL Client for GizmoSQL");
+        System.out.println("GizmoSQLLine " + getVersion() + " - SQL Client for GizmoSQL");
         System.out.println("Copyright (c) " + Year.now().getValue() + " GizmoData LLC");
-        System.out.println("Built with Apache Arrow Flight SQL JDBC Driver");
+        System.out.println("Built with GizmoSQL JDBC Driver");
         System.out.println();
         System.out.println("Quick Start:");
-        System.out.println("  !connect jdbc:arrow-flight-sql://localhost:31337 user password");
+        System.out.println("  !connect jdbc:gizmosql://localhost:31337 user password");
         System.out.println();
         System.out.println("Connection URL format:");
-        System.out.println("  jdbc:arrow-flight-sql://host:port[?param1=value1&param2=value2]");
+        System.out.println("  jdbc:gizmosql://host:port[?param1=value1&param2=value2]");
         System.out.println();
         System.out.println("Common parameters:");
         System.out.println("  useEncryption=true/false    Enable/disable TLS encryption");

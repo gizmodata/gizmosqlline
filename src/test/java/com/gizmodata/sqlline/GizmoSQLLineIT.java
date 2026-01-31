@@ -1,4 +1,4 @@
-package io.gizmosql.sqlline;
+package com.gizmodata.sqlline;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Integration tests for GizmoSQLLine using a real GizmoSQL server.
  *
  * These tests spin up a GizmoSQL Docker container and verify that
- * the Flight SQL JDBC driver can connect and execute queries.
+ * the GizmoSQL JDBC driver can connect and execute queries.
  *
  * To run locally on macOS with Docker Desktop:
  * export DOCKER_HOST=unix://$HOME/.docker/run/docker.sock
@@ -66,7 +66,7 @@ public class GizmoSQLLineIT {
         String host = gizmosqlContainer.getHost();
         Integer port = gizmosqlContainer.getMappedPort(GIZMOSQL_PORT);
         jdbcUrl = String.format(
-                "jdbc:arrow-flight-sql://%s:%d?useEncryption=true&disableCertificateVerification=true&user=%s&password=%s",
+                "jdbc:gizmosql://%s:%d?useEncryption=true&disableCertificateVerification=true&user=%s&password=%s",
                 host, port, USERNAME, PASSWORD);
         System.out.println("GizmoSQL container started at: " + host + ":" + port);
     }
@@ -80,9 +80,9 @@ public class GizmoSQLLineIT {
 
     @Test
     void testDriverLoads() throws Exception {
-        // Verify the Flight SQL JDBC driver can be loaded
+        // Verify the GizmoSQL JDBC driver can be loaded
         Class<?> driverClass = Class.forName("org.apache.arrow.driver.jdbc.ArrowFlightJdbcDriver");
-        assertNotNull(driverClass, "Flight SQL JDBC driver should be loadable");
+        assertNotNull(driverClass, "GizmoSQL JDBC driver should be loadable");
     }
 
     @Test

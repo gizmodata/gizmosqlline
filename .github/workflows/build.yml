@@ -76,7 +76,7 @@ jobs:
         body: |
           ## GizmoSQLLine v${{ steps.get_version.outputs.VERSION }}
 
-          A Flight SQL-specific version of SQLLine for connecting to GizmoSQL instances.
+          A GizmoSQL JDBC-based version of SQLLine for connecting to GizmoSQL instances.
 
           ### Install via Homebrew (Recommended)
 
@@ -107,7 +107,7 @@ jobs:
           gizmosqlline
 
           # Direct connection
-          gizmosqlline -u "jdbc:arrow-flight-sql://localhost:31337" -n user -p password
+          gizmosqlline -u "jdbc:gizmosql://localhost:31337" -n user -p password
           ```
 
           **Requires:** Java 11+ runtime (Homebrew install handles this automatically)
@@ -129,7 +129,7 @@ jobs:
         # Update the formula
         cat > Formula/gizmosqlline.rb << 'FORMULA'
         class Gizmosqlline < Formula
-          desc "Flight SQL command-line client for GizmoSQL servers"
+          desc "GizmoSQL JDBC command-line client for GizmoSQL servers"
           homepage "https://github.com/gizmodata/gizmosqlline"
           version "VERSION_PLACEHOLDER"
           license "Apache-2.0"
@@ -151,13 +151,13 @@ jobs:
 
           def caveats
             <<~EOS
-              GizmoSQLLine is a Flight SQL command-line client.
+              GizmoSQLLine is a GizmoSQL JDBC command-line client.
 
               To start in interactive mode:
                 gizmosqlline
 
               To connect directly:
-                gizmosqlline -u "jdbc:arrow-flight-sql://localhost:31337" -n user -p password
+                gizmosqlline -u "jdbc:gizmosql://localhost:31337" -n user -p password
 
               For help with SQLLine commands, type !help after connecting.
             EOS

@@ -1,12 +1,13 @@
 # GizmoSQLLine
 
-A Flight SQL-specific version of [SQLLine](https://github.com/julianhyde/sqlline) for connecting to GizmoSQL instances.
+A GizmoSQL JDBC-based version of [SQLLine](https://github.com/julianhyde/sqlline) for connecting to GizmoSQL instances.
 
-GizmoSQLLine bundles SQLLine with the Apache Arrow Flight SQL JDBC driver, providing an easy-to-use command-line SQL client for Flight SQL servers.
+GizmoSQLLine bundles SQLLine with the GizmoSQL JDBC driver, providing an easy-to-use command-line SQL client for GizmoSQL servers. The GizmoSQL JDBC driver supports both client-side and server-side query cancellation.
 
 ## Features
 
-- Pre-configured with Arrow Flight SQL JDBC driver (v18.3.0)
+- Pre-configured with GizmoSQL JDBC driver (v1.0.0)
+- Client-side and server-side query cancellation support
 - Single executable with all dependencies included
 - Full SQLLine functionality (command history, tab completion, output formatting)
 - Support for TLS encryption and various authentication methods
@@ -64,19 +65,19 @@ The executable will be available at `target/gizmosqlline`.
 Then connect to a GizmoSQL server:
 
 ```sql
-sqlline> !connect jdbc:arrow-flight-sql://localhost:31337 user password
+sqlline> !connect jdbc:gizmosql://localhost:31337 user password
 ```
 
 ### Command Line Connection
 
 ```bash
-./gizmosqlline -u "jdbc:arrow-flight-sql://localhost:31337" -n user -p password
+./gizmosqlline -u "jdbc:gizmosql://localhost:31337" -n user -p password
 ```
 
 ### Connection URL Format
 
 ```
-jdbc:arrow-flight-sql://host:port[?param1=value1&param2=value2]
+jdbc:gizmosql://host:port[?param1=value1&param2=value2]
 ```
 
 ### Common Connection Parameters
@@ -93,16 +94,16 @@ jdbc:arrow-flight-sql://host:port[?param1=value1&param2=value2]
 
 ```bash
 # Basic connection (no encryption)
-./gizmosqlline -u "jdbc:arrow-flight-sql://localhost:31337" -n admin -p secret
+./gizmosqlline -u "jdbc:gizmosql://localhost:31337" -n admin -p secret
 
 # With TLS encryption
-./gizmosqlline -u "jdbc:arrow-flight-sql://localhost:31337?useEncryption=true" -n admin -p secret
+./gizmosqlline -u "jdbc:gizmosql://localhost:31337?useEncryption=true" -n admin -p secret
 
 # With bearer token
-./gizmosqlline -u "jdbc:arrow-flight-sql://localhost:31337?token=your-bearer-token"
+./gizmosqlline -u "jdbc:gizmosql://localhost:31337?token=your-bearer-token"
 
 # Skip certificate verification (development only)
-./gizmosqlline -u "jdbc:arrow-flight-sql://localhost:31337?useEncryption=true&disableCertificateVerification=true" -n admin -p secret
+./gizmosqlline -u "jdbc:gizmosql://localhost:31337?useEncryption=true&disableCertificateVerification=true" -n admin -p secret
 ```
 
 ## SQLLine Commands
@@ -141,7 +142,7 @@ Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for detai
 
 This project bundles:
 - [SQLLine](https://github.com/julianhyde/sqlline) - BSD-3-Clause License
-- [Apache Arrow Flight SQL JDBC Driver](https://arrow.apache.org/) - Apache License 2.0
+- [GizmoSQL JDBC Driver](https://github.com/gizmodata/gizmosql-jdbc-driver) - Apache License 2.0
 
 ## Contributing
 

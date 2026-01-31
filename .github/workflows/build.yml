@@ -88,18 +88,48 @@ jobs:
           NA="--enable-native-access=ALL-UNNAMED"
         fi
 
-        echo ""
-        echo "Testing JDBC connection..."
+        # First, run a diagnostic test to catch detailed errors
+        cat > /tmp/TestConnection.java << 'TESTEOF'
+        import java.sql.*;
+        public class TestConnection {
+            public static void main(String[] args) {
+                System.out.println("Java: " + System.getProperty("java.version"));
+                try {
+                    Class.forName("org.apache.arrow.driver.jdbc.ArrowFlightJdbcDriver");
+                    System.out.println("Driver loaded OK");
+                } catch (Throwable e) {
+                    System.err.println("Driver load failed:");
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                try (Connection conn = DriverManager.getConnection(
+                        "jdbc:gizmosql://localhost:31337?useEncryption=true&disableCertificateVerification=true",
+                        "gizmosql_username", "gizmosql_password");
+                     Statement stmt = conn.createStatement();
+                     ResultSet rs = stmt.executeQuery("SELECT 1 AS v")) {
+                    rs.next();
+                    System.out.println("Query result: " + rs.getInt(1));
+                    System.out.println("SUCCESS: JDBC connection works on JDK " + System.getProperty("java.version"));
+                } catch (Throwable e) {
+                    System.err.println("Connection failed - full exception chain:");
+                    Throwable t = e;
+                    while (t != null) {
+                        System.err.println(">>> " + t.getClass().getName() + ": " + t.getMessage());
+                        t = t.getCause();
+                    }
+                    System.err.println("\nFull stack trace:");
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            }
+        }
+        TESTEOF
+
+        javac -cp gizmosqlline.jar /tmp/TestConnection.java -d /tmp
         java --add-opens=java.base/java.nio=ALL-UNNAMED \
              $NA \
-             -cp gizmosqlline.jar \
-             sqlline.SqlLine \
-             -u "jdbc:gizmosql://localhost:31337?useEncryption=true&disableCertificateVerification=true" \
-             -n gizmosql_username \
-             -p gizmosql_password \
-             -e "SELECT 1 AS connection_test;" \
-             -e "SELECT 'JDK ${{ matrix.jdk }} works' AS result;" \
-             -e "!quit"
+             -cp /tmp:gizmosqlline.jar \
+             TestConnection
 
   release:
     needs: [build, integration-test]

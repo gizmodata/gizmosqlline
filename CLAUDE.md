@@ -18,8 +18,10 @@ GizmoSQLLine is a SQLLine-based CLI client for GizmoSQL, packaged as a self-exec
 
 ## JVM Flags
 - `--add-opens=java.base/java.nio=ALL-UNNAMED` — required for Arrow memory (all Java versions)
-- `--enable-native-access=ALL-UNNAMED` — required for Java 16+ (JNA), but Java 11 rejects this flag
-- stub.sh and gizmosqlline.bat detect Java version and conditionally add `--enable-native-access`
+- `--enable-native-access=ALL-UNNAMED` — required for Java 16+ (JNA/Netty native access), but Java 11 rejects this flag
+- `--sun-misc-unsafe-memory-access=allow` — required for Java 25+ (Protobuf/Netty use `sun.misc.Unsafe`)
+- stub.sh, gizmosqlline.bat, CI workflow, and Homebrew formula all detect Java version and conditionally add flags
+- These `Unsafe` warnings will persist until upstream Protobuf, Netty, and Arrow migrate to `java.lang.foreign` (Panama APIs)
 
 ## Testing
 - **Unit tests**: Standard Maven surefire
@@ -37,6 +39,12 @@ GizmoSQLLine is a SQLLine-based CLI client for GizmoSQL, packaged as a self-exec
 - Build on JDK 11, integration test on JDK 11/17/21/25
 - Release job triggers on `v*` tags — creates GitHub release + updates Homebrew tap
 - Homebrew tap: `gizmodata/homebrew-tap` — uses `HOMEBREW_TAP_TOKEN` secret
+
+## Common Gotchas
+- **sed regex on macOS**: Use `[0-9][0-9]*` (one-or-more) not `[0-9]*` (zero-or-more) for version parsing — BSD sed handles the latter differently than GNU sed, causing version detection to silently fail
+- **JVM flags in 4 places**: When adding a new JVM flag, update: `stub.sh`, `gizmosqlline.bat`, CI workflow (`build.yml` integration test step), and Homebrew formula template (also in `build.yml` release step)
+- **Homebrew formula is generated**: The formula in `gizmodata/homebrew-tap` is overwritten on every release by the `build.yml` workflow — edit the template in `build.yml`, not the tap repo directly
+- **JDK 25 locally via Homebrew**: `/opt/homebrew/opt/openjdk@25/libexec/openjdk.jdk/Contents/Home` — not visible to `/usr/libexec/java_home`
 
 ## JDBC URI Format
 ```

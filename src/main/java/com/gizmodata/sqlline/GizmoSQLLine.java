@@ -73,6 +73,9 @@ public class GizmoSQLLine {
         System.out.println("Quick Start:");
         System.out.println("  !connect jdbc:gizmosql://localhost:31337 user password");
         System.out.println();
+        System.out.println("  OAuth/SSO:");
+        System.out.println("  !connect jdbc:gizmosql://host:port?authType=external \"\" \"\"");
+        System.out.println();
         System.out.println("Connection URL format:");
         System.out.println("  jdbc:gizmosql://host:port[?param1=value1&param2=value2]");
         System.out.println();
@@ -80,6 +83,8 @@ public class GizmoSQLLine {
         System.out.println("  useEncryption=true/false    Enable/disable TLS encryption");
         System.out.println("  disableCertificateVerification=true  Skip certificate verification");
         System.out.println("  token=<bearer_token>        Use bearer token authentication");
+        System.out.println("  authType=external           Enable server-side OAuth/SSO");
+        System.out.println("  oauthServerPort=<port>      Custom OAuth server port (default: 31339)");
         System.out.println();
     }
 
